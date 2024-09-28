@@ -7,13 +7,15 @@ import CustomButton from "@/components/CustomButton";
 
 export default function option () {
   return(
-    <SafeAreaView>
-      <Text>SanToda</Text>
-      <View className="">
-      <CustomButton title="Passenger" className=" bg-orange-400
+    <SafeAreaView className="flex-1 flex-start py-20 justify-center items-center bg-white">
+     
+      <Text className="font-JakartaBold text-2xl mb-6 text-left">SanToda</Text>
+     
+      <View className="flex-row justify-center gap-10">
+      <CustomButton title="Passenger" className=" w-28 h-13 bg-orange-400
       " onPress={() => router.push(`/(auth)/sign-in` as Href)} />
 
-      <CustomButton className="bg-yellow-400" title="Driver"/>
+      <CustomButton className=" w-28 h-13 bg-yellow-400" title="Driver"/>
       </View>
     </SafeAreaView>
   )

@@ -31,6 +31,7 @@ import onboarding1 from "@/assets/images/driver1.jpg";
 import onboarding2 from "@/assets/images/driver2.jpg";
 import onboarding3 from "@/assets/images/driver3.jpg";
 import signUpCar from "@/assets/images/icon1.png";
+import logo from "@/assets/images/SanToda1.png"
 
 //image ng swiper dun sa may unahan, yung tatlo inamo tingnan mo
 export const images = {
@@ -42,6 +43,7 @@ export const images = {
   check,
   noResult,
   message,
+  logo
 };
 
 export const icons = {

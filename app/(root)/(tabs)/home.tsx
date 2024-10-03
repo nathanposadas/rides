@@ -8,29 +8,6 @@ import { icons, images } from "@/constants";
 const HomeScreen = () => {
   const { user } = useUser();
 
-  const RiderCard = () => (
-    <View className={`bg-black p-4 rounded-lg mb-4`}>
-      <Image
-       
-        className="w-24 h-24 mb-2"
-        resizeMode="contain"
-      />
-      <Text className="text-xl font-bold mb-2">Moto Rider Name</Text>
-      <Text className="text-sm mb-4">Estimated Fare:</Text>
-      <View className="flex-row justify-between">
-        <TouchableOpacity className="bg-yellow-500 py-2 px-4 rounded">
-          <Text className="text-white">Book Now</Text>
-        </TouchableOpacity>
-        <TouchableOpacity className="bg-orange-500 py-2 px-4 rounded">
-          <Text className="text-white">Service</Text>
-        </TouchableOpacity>
-        <TouchableOpacity className="bg-gray-500 py-2 px-4 rounded">
-          <Text className="text-white">Details</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-
   return (
     <View className="flex-1 bg-white">
       {/* Fixed Header */}
@@ -72,14 +49,65 @@ const HomeScreen = () => {
         </Text>
 
         {/* Rider Cards */}
-        
-        <RiderCard
+        <View className={`bg-black p-4 rounded-lg mb-4`}>
+        <Image
+          className=" w-24 h-24 mb-2"
+          resizeMode="contain"
         />
-        
-        <RiderCard
-         />
-        <RiderCard
+        <Text className="text-xl font-bold mb-2 text-white">Moto Rider Name</Text>
+        <Text className="text-sm mb-4 text-white">Estimated Fare:</Text>
+        <View className="flex-row justify-between">
+          <TouchableOpacity className="bg-yellow-500 py-2 px-4 rounded">
+            <Text className="text-white">Book Now</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="bg-orange-500 py-2 px-4 rounded">
+            <Text className="text-white">Service</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="bg-gray-500 py-2 px-4 rounded">
+            <Text className="text-white">Details</Text>
+          </TouchableOpacity>
+        </View>
+    </View>
+
+    <View className={`bg-gray-400 p-4 rounded-lg mb-4`}>
+        <Image
+          className=" w-24 h-24 mb-2"
+          resizeMode="contain"
         />
+        <Text className="text-xl font-bold mb-2">Moto Rider Name</Text>
+        <Text className="text-sm mb-4">Estimated Fare:</Text>
+        <View className="flex-row justify-between">
+          <TouchableOpacity className="bg-yellow-500 py-2 px-4 rounded">
+            <Text className="text-white">Book Now</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="bg-orange-500 py-2 px-4 rounded">
+            <Text className="text-white">Service</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="bg-gray-500 py-2 px-4 rounded">
+            <Text className="text-white">Details</Text>
+          </TouchableOpacity>
+        </View>
+    </View>
+
+    <View className={`bg-yellow-600 p-4 rounded-lg mb-4`}>
+        <Image
+          className=" w-24 h-24 mb-2"
+          resizeMode="contain"
+        />
+        <Text className="text-xl font-bold mb-2">Moto Rider Name</Text>
+        <Text className="text-sm mb-4">Estimated Fare:</Text>
+        <View className="flex-row justify-between">
+          <TouchableOpacity className="bg-yellow-500 py-2 px-4 rounded">
+            <Text className="text-white">Book Now</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="bg-orange-500 py-2 px-4 rounded">
+            <Text className="text-white">Service</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="bg-gray-500 py-2 px-4 rounded">
+            <Text className="text-white">Details</Text>
+          </TouchableOpacity>
+        </View>
+    </View>
       </ScrollView>
 
       {/* Footer Language Button */}

@@ -78,19 +78,16 @@ export const onboarding = [
   {
     id: 1,
     title: "The perfect ride is just a tap away!",
-    description:"",
     image: images.onboarding1,
   },
   {
     id: 2,
     title: "Best car in your hands with Ryde",
-    description:"",
     image: images.onboarding2,
   },
   {
     id: 3,
     title: "Your ride, your way. Let's go!",
-    description:"",
     image: images.onboarding3,
   },
 ];

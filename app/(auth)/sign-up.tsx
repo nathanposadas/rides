@@ -18,6 +18,7 @@ const SignUp = () => {
     name: "",
     email: "",
     password: "",
+    pin: "", // Added PIN field
   });
   const [verification, setVerification] = useState({
     state: "default",
@@ -28,6 +29,12 @@ const SignUp = () => {
   const onSignUpPress = async () => {
     if (!isLoaded) return;
     try {
+      // Validate the PIN length
+      if (form.pin.length !== 4) {
+        Alert.alert("Error", "Please enter a 4-digit PIN.");
+        return;
+      }
+
       await signUp.create({
         emailAddress: form.email,
         password: form.password,
@@ -38,12 +45,11 @@ const SignUp = () => {
         state: "pending",
       });
     } catch (err: any) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
       console.log(JSON.stringify(err, null, 2));
       Alert.alert("Error", err.errors[0].longMessage);
     }
   };
+
   const onPressVerify = async () => {
     if (!isLoaded) return;
     try {
@@ -57,6 +63,7 @@ const SignUp = () => {
             name: form.name,
             email: form.email,
             clerkId: completeSignUp.createdUserId,
+            pin: form.pin, // Save the PIN to the backend
           }),
         });
         await setActive({ session: completeSignUp.createdSessionId });
@@ -72,8 +79,6 @@ const SignUp = () => {
         });
       }
     } catch (err: any) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
       setVerification({
         ...verification,
         error: err.errors[0].longMessage,
@@ -81,6 +86,7 @@ const SignUp = () => {
       });
     }
   };
+
   return (
     <ScrollView className="flex-1 bg-white">
       <View className="flex-1 bg-white">
@@ -115,6 +121,17 @@ const SignUp = () => {
             value={form.password}
             onChangeText={(value) => setForm({ ...form, password: value })}
           />
+          {/* Added 4-Digit PIN Input Field */}
+          <InputField
+            label="4-Digit PIN"
+            placeholder="Enter 4-digit PIN"
+            icon={icons.lock} // Assuming you're using a lock icon, change if needed
+            keyboardType="numeric"
+            maxLength={4}
+            value={form.pin}
+            onChangeText={(value) => setForm({ ...form, pin: value })}
+          />
+
           <CustomButton
             title="Sign Up"
             onPress={onSignUpPress}
@@ -129,11 +146,9 @@ const SignUp = () => {
             <Text className="text-primary-500">Log In</Text>
           </Link>
         </View>
+
         <ReactNativeModal
           isVisible={verification.state === "pending"}
-          // onBackdropPress={() =>
-          //   setVerification({ ...verification, state: "default" })
-          // }
           onModalHide={() => {
             if (verification.state === "success") {
               setShowSuccessModal(true);
@@ -169,6 +184,7 @@ const SignUp = () => {
             />
           </View>
         </ReactNativeModal>
+
         <ReactNativeModal isVisible={showSuccessModal}>
           <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
             <Image

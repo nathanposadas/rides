@@ -10,6 +10,9 @@ export default function option () {
   return(
     <SafeAreaView className="flex-1 flex-start py-20 justify-center items-center bg-white">
      <Image source={images.logo} className="z-0 w-full h-[100px]"/>
+     <Text className="py-3 font-bold text-center text-2xl">
+        Welcome to SanToda
+     </Text>
      <Text className="py-3">
         Please Choose User Option
      </Text>
@@ -18,7 +21,7 @@ export default function option () {
       <CustomButton title="Passenger" className=" w-28 h-13 bg-orange-400
       " onPress={() => router.push(`/(auth)/sign-in` as Href)} />
 
-      <CustomButton className=" w-28 h-13 bg-yellow-400" title="Driver"/>
+      <CustomButton className=" w-28 h-13 bg-yellow-400" title="Driver" onPress={() => router.push('/(auth)/sign-in')}/>
       </View>
     </SafeAreaView>
   )

@@ -1,6 +1,6 @@
 import { useSignUp, useSignIn } from "@clerk/clerk-expo";
 import { TouchableOpacity, Text, Alert, Image, ScrollView, View } from "react-native";
-import { router } from "expo-router";
+import { Href, router } from "expo-router";
 import { useCallback, useState } from "react";
 import { ReactNativeModal } from "react-native-modal";
 
@@ -10,7 +10,7 @@ import OAuth from "@/components/OAuth";
 import { icons, images } from "@/constants";
 import { fetchAPI } from "@/lib/fetch";
 
-const Auth = () => {
+const Auth = ({ isDriver }) => {  // Accept isDriver as a prop
   const { isLoaded: isSignUpLoaded, signUp, setActive: setActiveSignUp } = useSignUp();
   const { signIn, setActive: setActiveSignIn, isLoaded: isSignInLoaded } = useSignIn();
 
@@ -102,22 +102,22 @@ const Auth = () => {
 
       if (signInAttempt.status === "complete") {
         await setActiveSignIn({ session: signInAttempt.createdSessionId });
-        router.replace("/(root)/(tabs)/home");
+        router.replace(isDriver ? "/(driver)driverDashboard" : "/(root)/(tabs)/home"); // Adjust routing based on user type
       } else {
         Alert.alert("Error", "Log in failed. Please try again.");
       }
     } catch (err: any) {
       Alert.alert("Error", err.errors[0].longMessage);
     }
-  }, [isSignInLoaded, form]);
+  }, [isSignInLoaded, form, isDriver]);
 
   return (
     <ScrollView className="flex-1 bg-white">
       <View className="flex-1 bg-white">
         <View className="relative w-full h-[250px]">
-          <Image source={images.signUpCar} className="z-0 w-full h-[200px]" />
+          <Image source={images.logo} className="z-20 w-full h-[200px]" />
           <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5 left-5">
-            {isSigningIn ? "Welcome Back!" : "Create Your Account"}
+            {isSigningIn ? (isDriver ? "Driver Sign In" : "Welcome Back!") : "Create Your Account"}
           </Text>
         </View>
 

@@ -3,6 +3,7 @@ import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo';
 import { Link } from 'expo-router';
 import { Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { images } from "@/constants";
+import { riders } from '@/constants/rider'; // Import the riders array
 
 const HomeScreen = () => {
   const { user } = useUser();
@@ -56,65 +57,28 @@ const HomeScreen = () => {
         </SignedOut>
 
         {/* Rider Cards */}
-        <View className={`bg-black p-4 rounded-lg mb-4`}>
-          <Image
-            className="w-24 h-24 mb-2"
-            resizeMode="contain"
-          />
-          <Text className="text-xl font-bold mb-2 text-white">Moto Rider Name</Text>
-          <Text className="text-sm mb-4 text-white">Estimated Fare:</Text>
-          <View className="flex-row justify-between">
-            <TouchableOpacity className="bg-yellow-500 py-2 px-4 rounded">
-              <Text className="text-white">Book Now</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="bg-orange-500 py-2 px-4 rounded">
-              <Text className="text-white">Service</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="bg-gray-500 py-2 px-4 rounded">
-              <Text className="text-white">Details</Text>
-            </TouchableOpacity>
+        {riders.map((rider) => (
+          <View key={rider.id} className={`${rider.bgColor} p-4 rounded-lg mb-4`}>
+            <Image
+              source={rider.image}
+              className="w-24 h-24 mb-2"
+              resizeMode="contain"
+            />
+            <Text className="text-xl font-bold mb-2 text-white">{rider.name}</Text>
+            <Text className="text-sm mb-4 text-white">Estimated Fare: {rider.estimatedFare}</Text>
+            <View className="flex-row justify-between">
+              <TouchableOpacity className="bg-yellow-500 py-2 px-4 rounded">
+                <Text className="text-white">Book Now</Text>
+              </TouchableOpacity>
+              <TouchableOpacity className="bg-orange-500 py-2 px-4 rounded">
+                <Text className="text-white">Service</Text>
+              </TouchableOpacity>
+              <TouchableOpacity className="bg-gray-500 py-2 px-4 rounded">
+                <Text className="text-white">Details</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-
-        <View className={`bg-gray-400 p-4 rounded-lg mb-4`}>
-          <Image
-            className="w-24 h-24 mb-2"
-            resizeMode="contain"
-          />
-          <Text className="text-xl font-bold mb-2">Moto Rider Name</Text>
-          <Text className="text-sm mb-4">Estimated Fare:</Text>
-          <View className="flex-row justify-between">
-            <TouchableOpacity className="bg-yellow-500 py-2 px-4 rounded">
-              <Text className="text-white">Book Now</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="bg-orange-500 py-2 px-4 rounded">
-              <Text className="text-white">Service</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="bg-gray-500 py-2 px-4 rounded">
-              <Text className="text-white">Details</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View className={`bg-yellow-600 p-4 rounded-lg mb-4`}>
-          <Image
-            className="w-24 h-24 mb-2"
-            resizeMode="contain"
-          />
-          <Text className="text-xl font-bold mb-2">Moto Rider Name</Text>
-          <Text className="text-sm mb-4">Estimated Fare:</Text>
-          <View className="flex-row justify-between">
-            <TouchableOpacity className="bg-yellow-500 py-2 px-4 rounded">
-              <Text className="text-white">Book Now</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="bg-orange-500 py-2 px-4 rounded">
-              <Text className="text-white">Service</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="bg-gray-500 py-2 px-4 rounded">
-              <Text className="text-white">Details</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        ))}
       </ScrollView>
 
       {/* Footer Language Button */}

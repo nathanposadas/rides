@@ -10,7 +10,7 @@ import OAuth from "@/components/OAuth";
 import { icons, images } from "@/constants";
 import { fetchAPI } from "@/lib/fetch";
 
-const SignUp = () => {
+const SignUp = ({ isDriver }) => { // Accept isDriver as a prop
   const { isLoaded, signUp, setActive } = useSignUp();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -91,9 +91,9 @@ const SignUp = () => {
     <ScrollView className="flex-1 bg-white">
       <View className="flex-1 bg-white">
         <View className="relative w-full h-[250px]">
-          <Image source={images.signUpCar} className="z-0 w-full h-[200px]" />
+          <Image source={images.logo} className="z-0 w-full h-[200px]" />
           <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5 left-5">
-            Create Your Account
+            Create Your Account {isDriver && "(Driver)"} {/* Display driver info */}
           </Text>
         </View>
         <View className="p-5">
@@ -208,4 +208,5 @@ const SignUp = () => {
     </ScrollView>
   );
 };
+
 export default SignUp;

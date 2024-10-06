@@ -1,6 +1,6 @@
 import { useSignUp, useSignIn } from "@clerk/clerk-expo";
 import { TouchableOpacity, Text, Alert, Image, ScrollView, View } from "react-native";
-import { Href, router } from "expo-router";
+import { router } from "expo-router";
 import { useCallback, useState } from "react";
 import { ReactNativeModal } from "react-native-modal";
 
@@ -10,7 +10,12 @@ import OAuth from "@/components/OAuth";
 import { icons, images } from "@/constants";
 import { fetchAPI } from "@/lib/fetch";
 
-const Auth = ({ isDriver }) => {  // Accept isDriver as a prop
+// Define props type
+interface AuthProps {
+  isDriver: boolean;
+}
+
+const Auth: React.FC<AuthProps> = ({ isDriver }) => {  // Use defined type here
   const { isLoaded: isSignUpLoaded, signUp, setActive: setActiveSignUp } = useSignUp();
   const { signIn, setActive: setActiveSignIn, isLoaded: isSignInLoaded } = useSignIn();
 
@@ -102,7 +107,7 @@ const Auth = ({ isDriver }) => {  // Accept isDriver as a prop
 
       if (signInAttempt.status === "complete") {
         await setActiveSignIn({ session: signInAttempt.createdSessionId });
-        router.replace(isDriver ? "/(driver)driverDashboard" : "/(root)/(tabs)/home"); // Adjust routing based on user type
+        router.replace(isDriver ? "/(driver)/driverDashboard" : "/(root)/(tabs)/home"); // Adjust routing based on user type
       } else {
         Alert.alert("Error", "Log in failed. Please try again.");
       }

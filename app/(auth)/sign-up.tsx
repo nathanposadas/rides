@@ -10,7 +10,11 @@ import OAuth from "@/components/OAuth";
 import { icons, images } from "@/constants";
 import { fetchAPI } from "@/lib/fetch";
 
-const SignUp = ({ isDriver }) => { // Accept isDriver as a prop
+interface AuthProps {
+  isDriver: boolean;
+}
+
+const SignUp: React.FC<AuthProps> = ({ isDriver }) => {
   const { isLoaded, signUp, setActive } = useSignUp();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -45,7 +49,7 @@ const SignUp = ({ isDriver }) => { // Accept isDriver as a prop
         state: "pending",
       });
     } catch (err: any) {
-      console.log(JSON.stringify(err, null, 2));
+      console.log("Sign Up Error:", JSON.stringify(err, null, 2));
       Alert.alert("Error", err.errors[0].longMessage);
     }
   };
@@ -56,8 +60,9 @@ const SignUp = ({ isDriver }) => { // Accept isDriver as a prop
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code: verification.code,
       });
+
       if (completeSignUp.status === "complete") {
-        await fetchAPI("/(api)/user", {
+        const response = await fetchAPI("/(api)/user", {
           method: "POST",
           body: JSON.stringify({
             name: form.name,
@@ -66,11 +71,17 @@ const SignUp = ({ isDriver }) => { // Accept isDriver as a prop
             pin: form.pin, // Save the PIN to the backend
           }),
         });
+
+        // Log the response from the API
+        console.log("Response from Neon DB:", response);
+
+        // Check if the user was successfully created in Neon
+        if (!response.ok) {
+          throw new Error("Failed to create user in Neon database.");
+        }
+
         await setActive({ session: completeSignUp.createdSessionId });
-        setVerification({
-          ...verification,
-          state: "success",
-        });
+        setVerification({ ...verification, state: "success" });
       } else {
         setVerification({
           ...verification,
@@ -81,9 +92,10 @@ const SignUp = ({ isDriver }) => { // Accept isDriver as a prop
     } catch (err: any) {
       setVerification({
         ...verification,
-        error: err.errors[0].longMessage,
+        error: err.message || err.errors[0]?.longMessage || "An error occurred.",
         state: "failed",
       });
+      console.log("Verification Error:", JSON.stringify(err, null, 2));
     }
   };
 
@@ -93,7 +105,7 @@ const SignUp = ({ isDriver }) => { // Accept isDriver as a prop
         <View className="relative w-full h-[250px]">
           <Image source={images.logo} className="z-0 w-full h-[200px]" />
           <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5 left-5">
-            Create Your Account {isDriver && "(Driver)"} {/* Display driver info */}
+            Create Your Account {isDriver && "(Driver)"}
           </Text>
         </View>
         <View className="p-5">
@@ -121,11 +133,10 @@ const SignUp = ({ isDriver }) => { // Accept isDriver as a prop
             value={form.password}
             onChangeText={(value) => setForm({ ...form, password: value })}
           />
-          {/* Added 4-Digit PIN Input Field */}
           <InputField
             label="4-Digit PIN"
             placeholder="Enter 4-digit PIN"
-            icon={icons.lock} // Assuming you're using a lock icon, change if needed
+            icon={icons.lock}
             keyboardType="numeric"
             maxLength={4}
             value={form.pin}

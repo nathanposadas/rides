@@ -16,10 +16,10 @@ const HomeScreen = () => {
           <View className='flex-row items-center'>
             <Image
               source={images.signUpCar}
-              className="w-12 h-12"
+              className="w-20 h-16"
               resizeMode="contain"
             />
-            <Text className="text-2xl font-bold ml-2">SanToda</Text>
+            <Text className="text-2xl font-bold ml-0">SanToda</Text>
           </View>
           <View>
             <TouchableOpacity className='flex-1'>
@@ -30,7 +30,7 @@ const HomeScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <Text className="text-center font-bold mt-2">Welcome to SanToda Hailing App</Text>
+        <Text className="text-lg text-center font-bold mt-0">Welcome to SanToda Hailing App</Text>
       </View>
 
       {/* Scrollable Content */}
@@ -58,7 +58,11 @@ const HomeScreen = () => {
 
         {/* Rider Cards */}
         {riders.map((rider) => (
-          <View key={rider.id} className={`${rider.bgColor} p-4 rounded-lg mb-4`}>
+          <View 
+            key={rider.id} 
+            style={{ backgroundColor: rider.bgColor }} // Apply background color here
+            className="p-4 rounded-lg mb-4"
+          >
             <Image
               source={rider.image}
               className="w-24 h-24 mb-2"

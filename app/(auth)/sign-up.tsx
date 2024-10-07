@@ -10,8 +10,9 @@ import OAuth from "@/components/OAuth";
 import { icons, images } from "@/constants";
 import { fetchAPI } from "@/lib/fetch";
 
+// Define the AuthProps type to include the role (driver or passenger)
 interface AuthProps {
-  isDriver: boolean;
+  isDriver: boolean; // True if the user is a driver, false if passenger
 }
 
 const SignUp: React.FC<AuthProps> = ({ isDriver }) => {
@@ -39,6 +40,7 @@ const SignUp: React.FC<AuthProps> = ({ isDriver }) => {
         return;
       }
 
+      // Create the user with Clerk
       await signUp.create({
         emailAddress: form.email,
         password: form.password,
@@ -62,6 +64,7 @@ const SignUp: React.FC<AuthProps> = ({ isDriver }) => {
       });
 
       if (completeSignUp.status === "complete") {
+        // API call to store user data with role information (driver or passenger)
         const response = await fetchAPI("/(api)/user", {
           method: "POST",
           body: JSON.stringify({
@@ -69,6 +72,7 @@ const SignUp: React.FC<AuthProps> = ({ isDriver }) => {
             email: form.email,
             clerkId: completeSignUp.createdUserId,
             pin: form.pin, // Save the PIN to the backend
+            role: isDriver ? "driver" : "passenger", // Store the role in the backend
           }),
         });
 

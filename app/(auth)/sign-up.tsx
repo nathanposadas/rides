@@ -10,12 +10,7 @@ import OAuth from "@/components/OAuth";
 import { icons, images } from "@/constants";
 import { fetchAPI } from "@/lib/fetch";
 
-// Define the AuthProps type to include the role (driver or passenger)
-interface AuthProps {
-  isDriver: boolean; // True if the user is a driver, false if passenger
-}
-
-const SignUp: React.FC<AuthProps> = ({ isDriver }) => {
+const SignUp: React.FC = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -25,6 +20,7 @@ const SignUp: React.FC<AuthProps> = ({ isDriver }) => {
     password: "",
     pin: "", // Added PIN field
   });
+  
   const [verification, setVerification] = useState({
     state: "default",
     error: "",
@@ -33,6 +29,7 @@ const SignUp: React.FC<AuthProps> = ({ isDriver }) => {
 
   const onSignUpPress = async () => {
     if (!isLoaded) return;
+    
     try {
       // Validate the PIN length
       if (form.pin.length !== 4) {
@@ -58,13 +55,14 @@ const SignUp: React.FC<AuthProps> = ({ isDriver }) => {
 
   const onPressVerify = async () => {
     if (!isLoaded) return;
+    
     try {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code: verification.code,
       });
 
       if (completeSignUp.status === "complete") {
-        // API call to store user data with role information (driver or passenger)
+        // API call to store user data with role information (passenger)
         const response = await fetchAPI("/(api)/user", {
           method: "POST",
           body: JSON.stringify({
@@ -72,7 +70,7 @@ const SignUp: React.FC<AuthProps> = ({ isDriver }) => {
             email: form.email,
             clerkId: completeSignUp.createdUserId,
             pin: form.pin, // Save the PIN to the backend
-            role: isDriver ? "driver" : "passenger", // Store the role in the backend
+            role: "passenger", // Store only passenger role
           }),
         });
 
@@ -109,7 +107,7 @@ const SignUp: React.FC<AuthProps> = ({ isDriver }) => {
         <View className="relative w-full h-[250px]">
           <Image source={images.logo} className="z-0 w-full h-[200px]" />
           <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5 left-5">
-            Create Your Account {isDriver && "(Driver)"}
+            Create Your Account (Passenger)
           </Text>
         </View>
         <View className="p-5">

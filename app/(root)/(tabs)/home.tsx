@@ -1,12 +1,18 @@
 import React from 'react';
 import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo';
-import { Link } from 'expo-router';
+import { Link , useRouter } from 'expo-router';
 import { Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { images } from "@/constants";
 import { riders } from '@/constants/rider'; // Import the riders array
 
 const HomeScreen = () => {
   const { user } = useUser();
+  const router = useRouter();
+
+  // Function to navigate to the profile screen
+  const navigateToProfile = () => {
+    router.push('/passengerProfile'); // Correct path to navigate to the profile screen
+  };
 
   return (
     <View className="flex-1 bg-white">
@@ -22,7 +28,8 @@ const HomeScreen = () => {
             <Text className="text-2xl font-bold ml-0">SanToda</Text>
           </View>
           <View>
-            <TouchableOpacity className='flex-1'>
+            {/* Navigate to Profile Screen */}
+            <TouchableOpacity className='flex-1' onPress={navigateToProfile}>
               <Image
                 source={{ uri: 'https://img.icons8.com/ios-filled/50/000000/user-male-circle.png' }}
                 className="w-8 h-8"

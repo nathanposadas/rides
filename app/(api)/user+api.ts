@@ -15,7 +15,14 @@ export async function POST(request: Request) {
     if (!name || !email || !clerkId || !pin || !role) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",  // Allow all origins
+            "Access-Control-Allow-Methods": "POST",  // Allow POST requests
+          },
+        }
       );
     }
 
@@ -43,14 +50,25 @@ export async function POST(request: Request) {
     if (!response || response.length === 0) {
       return new Response(
         JSON.stringify({ error: "User could not be created." }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",  // Allow all origins
+            "Access-Control-Allow-Methods": "POST",  // Allow POST requests
+          },
+        }
       );
     }
 
     // Respond with the inserted user data
     return new Response(JSON.stringify({ data: response[0] }), {
       status: 201,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",  // Allow all origins
+        "Access-Control-Allow-Methods": "POST",  // Allow POST requests
+      },
     });
   } catch (error) {
     console.error("Error creating user:", error);
@@ -58,7 +76,14 @@ export async function POST(request: Request) {
     // Return error with proper headers
     return new Response(
       JSON.stringify({ error: "Internal Server Error" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",  // Allow all origins
+          "Access-Control-Allow-Methods": "POST",  // Allow POST requests
+        },
+      }
     );
   }
 }

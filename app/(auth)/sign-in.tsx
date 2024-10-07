@@ -10,21 +10,19 @@ import OAuth from "@/components/OAuth";
 import { icons, images } from "@/constants";
 import { fetchAPI } from "@/lib/fetch";
 
-const Auth: React.FC = () => { // No props needed for passenger only
+const Auth: React.FC = () => {
   const { isLoaded: isSignUpLoaded, signUp, setActive: setActiveSignUp } = useSignUp();
   const { signIn, setActive: setActiveSignIn, isLoaded: isSignInLoaded } = useSignIn();
 
-  const [isSigningIn, setIsSigningIn] = useState(true); // Toggle between Sign-In and Sign-Up
+  const [isSigningIn, setIsSigningIn] = useState(true);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
-    pin: "", // For Sign-Up
-    role: "passenger", // Fixed role for passenger
+    pin: "",
+    role: "passenger",
   });
-
   const [verification, setVerification] = useState({
     state: "default",
     error: "",
@@ -46,12 +44,9 @@ const Auth: React.FC = () => { // No props needed for passenger only
         password: form.password,
       });
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-      setVerification({
-        ...verification,
-        state: "pending",
-      });
+      setVerification({ ...verification, state: "pending" });
     } catch (err: any) {
-      Alert.alert("Error", err.errors[0].longMessage);
+      Alert.alert("Error", err.errors?.[0]?.longMessage || "An error occurred during sign up.");
     }
   };
 
@@ -71,25 +66,17 @@ const Auth: React.FC = () => { // No props needed for passenger only
             email: form.email,
             clerkId: completeSignUp.createdUserId,
             pin: form.pin,
-            role: form.role, // Pass role during sign-up
+            role: form.role,
           }),
         });
         await setActiveSignUp({ session: completeSignUp.createdSessionId });
         setVerification({ ...verification, state: "success" });
-        router.replace("/(root)/(tabs)/home"); // Redirect to passenger home
+        router.replace("/(root)/(tabs)/home");
       } else {
-        setVerification({
-          ...verification,
-          error: "Verification failed. Please try again.",
-          state: "failed",
-        });
+        setVerification({ ...verification, error: "Verification failed. Please try again.", state: "failed" });
       }
     } catch (err: any) {
-      setVerification({
-        ...verification,
-        error: err.errors[0].longMessage,
-        state: "failed",
-      });
+      setVerification({ ...verification, error: err.errors?.[0]?.longMessage || "Verification failed.", state: "failed" });
     }
   };
 
@@ -104,7 +91,6 @@ const Auth: React.FC = () => { // No props needed for passenger only
       });
 
       if (signInAttempt.status === "complete") {
-        // Set session after successful sign in
         await setActiveSignIn({ session: signInAttempt.createdSessionId });
 
         // Fetch user role after successful sign-in
@@ -112,11 +98,10 @@ const Auth: React.FC = () => { // No props needed for passenger only
           method: "GET",
         });
 
-        const user = await userResponse.json(); // Assuming the API returns the role in the response
+        const user = await userResponse.json();
 
-        // Check the user role and route accordingly
         if (user.role === "passenger") {
-          router.replace("/(root)/(tabs)/home"); // Redirect to passenger home
+          router.replace("/(root)/(tabs)/home");
         } else {
           Alert.alert("Error", "This account is not a passenger.");
         }
@@ -124,7 +109,8 @@ const Auth: React.FC = () => { // No props needed for passenger only
         Alert.alert("Error", "Log in failed. Please try again.");
       }
     } catch (err: any) {
-      Alert.alert("Error", err.errors[0]?.longMessage || "An error occurred");
+      console.error(err); // Log the error for debugging
+      Alert.alert("Error", err.errors?.[0]?.longMessage || "An error occurred during sign in.");
     }
   }, [isSignInLoaded, form]);
 
@@ -165,8 +151,6 @@ const Auth: React.FC = () => { // No props needed for passenger only
             value={form.password}
             onChangeText={(value) => setForm({ ...form, password: value })}
           />
-
-          {/* Only show PIN field in Sign-Up */}
           {!isSigningIn && (
             <InputField
               label="4-Digit PIN"
@@ -196,6 +180,7 @@ const Auth: React.FC = () => { // No props needed for passenger only
           </TouchableOpacity>
         </View>
 
+        {/* Verification Modal */}
         <ReactNativeModal
           isVisible={verification.state === "pending"}
           onModalHide={() => {
@@ -205,9 +190,7 @@ const Auth: React.FC = () => { // No props needed for passenger only
           }}
         >
           <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
-            <Text className="font-JakartaExtraBold text-2xl mb-2">
-              Verification
-            </Text>
+            <Text className="font-JakartaExtraBold text-2xl mb-2">Verification</Text>
             <Text className="font-Jakarta mb-5">
               We've sent a verification code to {form.email}.
             </Text>
@@ -217,14 +200,10 @@ const Auth: React.FC = () => { // No props needed for passenger only
               placeholder={"12345"}
               value={verification.code}
               keyboardType="numeric"
-              onChangeText={(code) =>
-                setVerification({ ...verification, code })
-              }
+              onChangeText={(code) => setVerification({ ...verification, code })}
             />
             {verification.error && (
-              <Text className="text-red-500 text-sm mt-1">
-                {verification.error}
-              </Text>
+              <Text className="text-red-500 text-sm mt-1">{verification.error}</Text>
             )}
             <CustomButton
               title="Verify Email"
@@ -234,15 +213,14 @@ const Auth: React.FC = () => { // No props needed for passenger only
           </View>
         </ReactNativeModal>
 
+        {/* Success Modal */}
         <ReactNativeModal isVisible={showSuccessModal}>
           <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
             <Image
               source={images.check}
               className="w-[110px] h-[110px] mx-auto my-5"
             />
-            <Text className="text-3xl font-JakartaBold text-center">
-              Verified
-            </Text>
+            <Text className="text-3xl font-JakartaBold text-center">Verified</Text>
             <Text className="text-base text-gray-400 font-Jakarta text-center mt-2">
               You have successfully verified your account.
             </Text>

@@ -4,7 +4,7 @@ export async function POST(request: Request) {
   try {
     // Initialize the Neon database connection
     const sql = neon(`${process.env.DATABASE_URL}`);
-
+    
     // Parse the incoming request body as JSON
     const { name, email, clerkId, pin, role } = await request.json();
 
@@ -70,10 +70,28 @@ export async function POST(request: Request) {
         "Access-Control-Allow-Methods": "POST",  // Allow POST requests
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error creating user:", error);
 
-    // Return error with proper headers
+    // Type assertion to access message property
+    if (error instanceof Error) {
+      // Check if the error is related to the database connection
+      if (error.message.includes('failed to connect')) {
+        return new Response(
+          JSON.stringify({ error: "Database connection error" }),
+          {
+            status: 500,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",  // Allow all origins
+              "Access-Control-Allow-Methods": "POST",  // Allow POST requests
+            },
+          }
+        );
+      }
+    }
+
+    // Return a general internal server error response
     return new Response(
       JSON.stringify({ error: "Internal Server Error" }),
       {

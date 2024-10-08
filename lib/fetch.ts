@@ -1,31 +1,30 @@
-// lib/fetchUtils.ts (or fetchUtils.js if not using TypeScript)
 import { useState, useEffect, useCallback } from "react";
 
-export const fetchAPI = async (url: string, options?: RequestInit): Promise<any> => {
+// Utility function to fetch data from an API
+export const fetchAPI = async (url: string, options?: RequestInit) => {
   try {
     const response = await fetch(url, options);
-    
-    // Log the response for debugging
-    const text = await response.text();
-    console.log("Response text:", text); // Log the raw response text
 
+    // Check if the response status is not OK (status code is not 2xx)
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}, message: ${response.statusText}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    // Attempt to parse the JSON response
-    try {
-      return JSON.parse(text); // Parse the JSON response
-    } catch (jsonError) {
-      console.error("JSON parsing error:", jsonError);
-      throw new Error("Failed to parse JSON response.");
+    // Check if the response is JSON by inspecting the Content-Type header
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      return await response.json(); // Parse JSON if it's valid
+    } else {
+      const text = await response.text(); // Get raw response text if it's not JSON
+      throw new Error(`Unexpected response format: ${text}`);
     }
   } catch (error) {
     console.error("Fetch error:", error);
-    throw error; // Re-throw the error for handling in useFetch
+    throw error; // Re-throw the error to be handled by the calling code
   }
 };
 
+// Custom hook to fetch data using the fetchAPI function
 export const useFetch = <T>(url: string, options?: RequestInit) => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
@@ -37,9 +36,9 @@ export const useFetch = <T>(url: string, options?: RequestInit) => {
 
     try {
       const result = await fetchAPI(url, options);
-      setData(result); // Assuming result is the expected data directly
+      setData(result); // Assuming the result is the desired data
     } catch (err) {
-      setError((err as Error).message); // Set the error message from the thrown error
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }

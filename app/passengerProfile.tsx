@@ -20,7 +20,7 @@ const ProfileScreen = () => {
     <View className="flex-1 bg-white p-4">
       {/* Back Button */}
       <TouchableOpacity onPress={() => router.back()} className="mb-4">
-        <Text className="text-blue-500">← Back</Text>
+        <Text className="text-blue-500">Back</Text>
       </TouchableOpacity>
 
       {/* Profile Picture */}

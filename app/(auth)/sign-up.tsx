@@ -1,7 +1,7 @@
 import { useSignUp } from "@clerk/clerk-expo";
-import { Link, router } from "expo-router";
-import { useState } from "react";
-import { Alert, Image, ScrollView, Text, View } from "react-native";
+import { TouchableOpacity, Text, Alert, Image, ScrollView, View } from "react-native";
+import { router } from "expo-router";
+import { useCallback, useState } from "react";
 import { ReactNativeModal } from "react-native-modal";
 
 import CustomButton from "@/components/CustomButton";
@@ -10,79 +10,69 @@ import OAuth from "@/components/OAuth";
 import { icons, images } from "@/constants";
 import { fetchAPI } from "@/lib/fetch";
 
-const SignUp: React.FC = () => {
-  const { isLoaded, signUp, setActive } = useSignUp();
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+const PassengerSignUp = () => {
+  const { isLoaded: isSignUpLoaded, signUp, setActive: setActiveSignUp } = useSignUp();
 
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
-    pin: "", // Added PIN field
+    pin: "",
+    role: "passenger", // Fixed role for drivers
   });
-  
+
   const [verification, setVerification] = useState({
     state: "default",
     error: "",
     code: "",
   });
 
+  // Sign-Up functionality
   const onSignUpPress = async () => {
-    if (!isLoaded) return;
-    
+    if (!isSignUpLoaded) return;
+
     try {
-      // Validate the PIN length
       if (form.pin.length !== 4) {
         Alert.alert("Error", "Please enter a 4-digit PIN.");
         return;
       }
 
-      // Create the user with Clerk
+      const { email, password, name, pin, role } = form;
       await signUp.create({
-        emailAddress: form.email,
-        password: form.password,
+        emailAddress: email,
+        password: password,
       });
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-      setVerification({
-        ...verification,
-        state: "pending",
-      });
+      setVerification({ ...verification, state: "pending" });
     } catch (err: any) {
-      console.log("Sign Up Error:", JSON.stringify(err, null, 2));
       Alert.alert("Error", err.errors[0].longMessage);
     }
   };
 
   const onPressVerify = async () => {
-    if (!isLoaded) return;
-    
+    if (!isSignUpLoaded) return;
+
     try {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code: verification.code,
       });
 
       if (completeSignUp.status === "complete") {
-        // API call to store user data with role information (passenger)
-        const response = await fetchAPI("/(api)/user", {
+        // Insert user data into the database
+        await fetchAPI("/(api)/user", {
           method: "POST",
           body: JSON.stringify({
             name: form.name,
             email: form.email,
             clerkId: completeSignUp.createdUserId,
-            pin: form.pin, // Save the PIN to the backend
-            role: "passenger", // Store only passenger role
+            pin: form.pin,
+            role: form.role,
           }),
         });
 
-        // Log the response from the API
-        console.log("Response from Neon DB:", response);
-
-        // Check if the user was successfully created in Neon
-        if (!response.ok) {
-          throw new Error("Failed to create user in Neon database.");
-        }
-
-        await setActive({ session: completeSignUp.createdSessionId });
+        // Set the session and route to the passenger dashboard
+        await setActiveSignUp({ session: completeSignUp.createdSessionId });
+        router.replace("/(root)/(tabs)/home"); // Redirect to driver dashboard
         setVerification({ ...verification, state: "success" });
       } else {
         setVerification({
@@ -94,10 +84,9 @@ const SignUp: React.FC = () => {
     } catch (err: any) {
       setVerification({
         ...verification,
-        error: err.message || err.errors[0]?.longMessage || "An error occurred.",
+        error: err.errors[0].longMessage,
         state: "failed",
       });
-      console.log("Verification Error:", JSON.stringify(err, null, 2));
     }
   };
 
@@ -105,11 +94,12 @@ const SignUp: React.FC = () => {
     <ScrollView className="flex-1 bg-white">
       <View className="flex-1 bg-white">
         <View className="relative w-full h-[250px]">
-          <Image source={images.logo} className="z-0 w-full h-[200px]" />
+          <Image source={images.logo} className="z-20 w-full h-[200px]" />
           <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5 left-5">
-            Create Your Account (Passenger)
+            Create Your Driver Account
           </Text>
         </View>
+
         <View className="p-5">
           <InputField
             label="Name"
@@ -150,24 +140,17 @@ const SignUp: React.FC = () => {
             onPress={onSignUpPress}
             className="mt-6"
           />
+
           <OAuth />
-          <Link
-            href="/sign-in"
-            className="text-lg text-center text-general-200 mt-10"
-          >
-            Already have an account?{" "}
-            <Text className="text-primary-500">Log In</Text>
-          </Link>
+
+          <TouchableOpacity onPress={() => router.push("/(auth)/sign-in")} className="mt-10">
+            <Text className="text-lg text-center text-general-200">
+              Already have an account? Sign In
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        <ReactNativeModal
-          isVisible={verification.state === "pending"}
-          onModalHide={() => {
-            if (verification.state === "success") {
-              setShowSuccessModal(true);
-            }
-          }}
-        >
+        <ReactNativeModal isVisible={verification.state === "pending"}>
           <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
             <Text className="font-JakartaExtraBold text-2xl mb-2">
               Verification
@@ -197,29 +180,9 @@ const SignUp: React.FC = () => {
             />
           </View>
         </ReactNativeModal>
-
-        <ReactNativeModal isVisible={showSuccessModal}>
-          <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
-            <Image
-              source={images.check}
-              className="w-[110px] h-[110px] mx-auto my-5"
-            />
-            <Text className="text-3xl font-JakartaBold text-center">
-              Verified
-            </Text>
-            <Text className="text-base text-gray-400 font-Jakarta text-center mt-2">
-              You have successfully verified your account.
-            </Text>
-            <CustomButton
-              title="Browse Home"
-              onPress={() => router.push(`/(root)/(tabs)/home`)}
-              className="mt-5"
-            />
-          </View>
-        </ReactNativeModal>
       </View>
     </ScrollView>
   );
 };
 
-export default SignUp;
+export default PassengerSignUp;

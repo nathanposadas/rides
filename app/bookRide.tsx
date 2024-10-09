@@ -11,7 +11,7 @@ const App = () => {
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="flex-1 p-5">
         {/* Back Button */}
-        <TouchableOpacity onPress={() => router.back()} className="mb-5">
+        <TouchableOpacity onPress={() => router.push('/(root)/(tabs)/home')} className="mb-5">
           <Text className="text-blue-500 font-bold">Back</Text>
         </TouchableOpacity>
 

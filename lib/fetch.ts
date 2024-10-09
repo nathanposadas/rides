@@ -1,13 +1,27 @@
 import { useState, useEffect, useCallback } from "react";
 
 // Utility function to fetch data from an API
-export const fetchAPI = async (url: string, options?: RequestInit) => {
+export const fetchAPI = async (url: string, options: RequestInit = {}) => {
   try {
-    const response = await fetch(url, options);
+    // Ensure headers are set for JSON requests, if not already provided
+    const defaultHeaders = {
+      "Content-Type": "application/json",
+    };
+    
+    const finalOptions = {
+      ...options,
+      headers: {
+        ...defaultHeaders,
+        ...options.headers,
+      },
+    };
+
+    const response = await fetch(url, finalOptions);
 
     // Check if the response status is not OK (status code is not 2xx)
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
     }
 
     // Check if the response is JSON by inspecting the Content-Type header
@@ -16,7 +30,7 @@ export const fetchAPI = async (url: string, options?: RequestInit) => {
       return await response.json(); // Parse JSON if it's valid
     } else {
       const text = await response.text(); // Get raw response text if it's not JSON
-      throw new Error(`Unexpected response format: ${text}`);
+      return { message: text }; // Return a structured response for non-JSON
     }
   } catch (error) {
     console.error("Fetch error:", error);

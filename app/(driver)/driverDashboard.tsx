@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { Href, useRouter } from 'expo-router'; // Import the useRouter hook
+import { router } from "expo-router";
 
 // Define types for RequestCard props
 type Schedule = {
@@ -18,6 +20,12 @@ type RequestCardProps = {
 };
 
 const HomeScreen = () => {
+  const router = useRouter(); // Initialize the router
+
+  const navigateToProfile = () => {
+    router.push('/driverProfile'); // Change the path to /driverProfile
+  };
+
   return (
     <View className="flex-1 bg-gray-200">
       {/* Header */}
@@ -32,7 +40,7 @@ const HomeScreen = () => {
         </View>
         <View className="flex-row items-center">
           <Text className="text-lg font-bold">Rider Dashboard</Text>
-          <TouchableOpacity className="ml-4">
+          <TouchableOpacity onPress={navigateToProfile} className="ml-4">
             <Image
               source={{ uri: 'https://img.icons8.com/ios-filled/50/000000/user-male-circle.png' }}
               className="w-8 h-8"
@@ -114,7 +122,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ type, typeColor, name, destin
 
       {/* Action Buttons */}
       <View className="flex-row justify-between mt-4">
-        <TouchableOpacity className="bg-green-500 px-4 py-2 rounded-lg">
+        <TouchableOpacity  onPress={() => router.push("/driverMaps" as Href)} className="bg-green-500 px-4 py-2 rounded-lg">
           <Text className="text-white">ACCEPT</Text>
         </TouchableOpacity>
         <TouchableOpacity className="bg-red-500 px-4 py-2 rounded-lg">

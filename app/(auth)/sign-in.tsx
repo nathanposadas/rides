@@ -1,8 +1,7 @@
-import { useSignUp, useSignIn } from "@clerk/clerk-expo";
+import { useSignIn } from "@clerk/clerk-expo";
 import { TouchableOpacity, Text, Alert, Image, ScrollView, View } from "react-native";
 import { router } from "expo-router";
 import { useCallback, useState } from "react";
-import { ReactNativeModal } from "react-native-modal";
 
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/inputField";
@@ -10,75 +9,13 @@ import OAuth from "@/components/OAuth";
 import { icons, images } from "@/constants";
 import { fetchAPI } from "@/lib/fetch";
 
-const Auth: React.FC = () => {
-  const { isLoaded: isSignUpLoaded, signUp, setActive: setActiveSignUp } = useSignUp();
+const PassengerSignIn = () => {
   const { signIn, setActive: setActiveSignIn, isLoaded: isSignInLoaded } = useSignIn();
 
-  const [isSigningIn, setIsSigningIn] = useState(true);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [form, setForm] = useState({
-    name: "",
     email: "",
     password: "",
-    pin: "",
-    role: "passenger",
   });
-  const [verification, setVerification] = useState({
-    state: "default",
-    error: "",
-    code: "",
-  });
-
-  // Sign-Up functionality
-  const onSignUpPress = async () => {
-    if (!isSignUpLoaded) return;
-
-    try {
-      if (form.pin.length !== 4) {
-        Alert.alert("Error", "Please enter a 4-digit PIN.");
-        return;
-      }
-
-      await signUp.create({
-        emailAddress: form.email,
-        password: form.password,
-      });
-      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-      setVerification({ ...verification, state: "pending" });
-    } catch (err: any) {
-      Alert.alert("Error", err.errors?.[0]?.longMessage || "An error occurred during sign up.");
-    }
-  };
-
-  const onPressVerify = async () => {
-    if (!isSignUpLoaded) return;
-
-    try {
-      const completeSignUp = await signUp.attemptEmailAddressVerification({
-        code: verification.code,
-      });
-
-      if (completeSignUp.status === "complete") {
-        await fetchAPI("/(api)/user", {
-          method: "POST",
-          body: JSON.stringify({
-            name: form.name,
-            email: form.email,
-            clerkId: completeSignUp.createdUserId,
-            pin: form.pin,
-            role: form.role,
-          }),
-        });
-        await setActiveSignUp({ session: completeSignUp.createdSessionId });
-        setVerification({ ...verification, state: "success" });
-        router.replace("/(root)/(tabs)/home");
-      } else {
-        setVerification({ ...verification, error: "Verification failed. Please try again.", state: "failed" });
-      }
-    } catch (err: any) {
-      setVerification({ ...verification, error: err.errors?.[0]?.longMessage || "Verification failed.", state: "failed" });
-    }
-  };
 
   // Sign-In functionality
   const onSignInPress = useCallback(async () => {
@@ -91,26 +28,16 @@ const Auth: React.FC = () => {
       });
 
       if (signInAttempt.status === "complete") {
+        // Set session after successful sign in
         await setActiveSignIn({ session: signInAttempt.createdSessionId });
 
-        // Fetch user role after successful sign-in
-        const userResponse = await fetchAPI(`/user-role?email=${form.email}`, {
-          method: "GET",
-        });
-
-        const user = await userResponse.json();
-
-        if (user.role === "passenger") {
-          router.replace("/(root)/(tabs)/home");
-        } else {
-          Alert.alert("Error", "This account is not a passenger.");
-        }
+        // Route directly to the passenger dashboard upon successful sign-in
+        router.replace("/(root)/(tabs)/home"); // Directly route to driver dashboard
       } else {
         Alert.alert("Error", "Log in failed. Please try again.");
       }
     } catch (err: any) {
-      console.error(err); // Log the error for debugging
-      Alert.alert("Error", err.errors?.[0]?.longMessage || "An error occurred during sign in.");
+      Alert.alert("Error", err.errors[0]?.longMessage || "An error occurred");
     }
   }, [isSignInLoaded, form]);
 
@@ -120,20 +47,11 @@ const Auth: React.FC = () => {
         <View className="relative w-full h-[250px]">
           <Image source={images.logo} className="z-20 w-full h-[200px]" />
           <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5 left-5">
-            {isSigningIn ? "Welcome Back!" : "Create Your Account"}
+            Passenger Sign In
           </Text>
         </View>
 
         <View className="p-5">
-          {!isSigningIn && (
-            <InputField
-              label="Name"
-              placeholder="Enter name"
-              icon={icons.person}
-              value={form.name}
-              onChangeText={(value) => setForm({ ...form, name: value })}
-            />
-          )}
           <InputField
             label="Email"
             placeholder="Enter email"
@@ -151,89 +69,24 @@ const Auth: React.FC = () => {
             value={form.password}
             onChangeText={(value) => setForm({ ...form, password: value })}
           />
-          {!isSigningIn && (
-            <InputField
-              label="4-Digit PIN"
-              placeholder="Enter 4-digit PIN"
-              icon={icons.lock}
-              keyboardType="numeric"
-              maxLength={4}
-              value={form.pin}
-              onChangeText={(value) => setForm({ ...form, pin: value })}
-            />
-          )}
 
           <CustomButton
-            title={isSigningIn ? "Sign In" : "Sign Up"}
-            onPress={isSigningIn ? onSignInPress : onSignUpPress}
+            title="Sign In"
+            onPress={onSignInPress}
             className="mt-6"
           />
 
           <OAuth />
 
-          <TouchableOpacity onPress={() => setIsSigningIn(!isSigningIn)} className="mt-10">
+          <TouchableOpacity onPress={() => router.push("/(auth)/sign-up")} className="mt-10">
             <Text className="text-lg text-center text-general-200">
-              {isSigningIn
-                ? "Don't have an account? Sign Up"
-                : "Already have an account? Sign In"}
+              Don't have an account? Sign Up
             </Text>
           </TouchableOpacity>
         </View>
-
-        {/* Verification Modal */}
-        <ReactNativeModal
-          isVisible={verification.state === "pending"}
-          onModalHide={() => {
-            if (verification.state === "success") {
-              setShowSuccessModal(true);
-            }
-          }}
-        >
-          <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
-            <Text className="font-JakartaExtraBold text-2xl mb-2">Verification</Text>
-            <Text className="font-Jakarta mb-5">
-              We've sent a verification code to {form.email}.
-            </Text>
-            <InputField
-              label={"Code"}
-              icon={icons.lock}
-              placeholder={"12345"}
-              value={verification.code}
-              keyboardType="numeric"
-              onChangeText={(code) => setVerification({ ...verification, code })}
-            />
-            {verification.error && (
-              <Text className="text-red-500 text-sm mt-1">{verification.error}</Text>
-            )}
-            <CustomButton
-              title="Verify Email"
-              onPress={onPressVerify}
-              className="mt-5 bg-success-500"
-            />
-          </View>
-        </ReactNativeModal>
-
-        {/* Success Modal */}
-        <ReactNativeModal isVisible={showSuccessModal}>
-          <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
-            <Image
-              source={images.check}
-              className="w-[110px] h-[110px] mx-auto my-5"
-            />
-            <Text className="text-3xl font-JakartaBold text-center">Verified</Text>
-            <Text className="text-base text-gray-400 font-Jakarta text-center mt-2">
-              You have successfully verified your account.
-            </Text>
-            <CustomButton
-              title="Browse Home"
-              onPress={() => router.push(`/(root)/(tabs)/home`)}
-              className="mt-5"
-            />
-          </View>
-        </ReactNativeModal>
       </View>
     </ScrollView>
   );
 };
 
-export default Auth;
+export default PassengerSignIn;

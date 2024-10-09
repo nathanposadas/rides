@@ -13,7 +13,7 @@ const ProfileScreen = () => {
   // Function to handle user logout
   const handleLogout = async () => {
     await clerk.signOut(); // Log out the user
-    router.push('/sign-in'); // Redirect to sign-in page after logout
+    router.push('/(auth)/sign-in'); // Redirect to sign-in page after logout
   };
 
   return (

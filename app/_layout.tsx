@@ -50,6 +50,7 @@ if (!publishableKey) {
         <Stack.Screen name="passengerProfile"options={{ headerShown: false }} />
         <Stack.Screen name="bookRide"options={{ headerShown: false }} />
         <Stack.Screen name="driverMaps"options={{ headerShown: false }} />
+        <Stack.Screen name="PassengerServiceDashboard"options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       </ClerkLoaded>

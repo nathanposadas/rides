@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, Switch, SafeAreaView } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import Map from '@/components/map';
+import { router } from "expo-router";
 
 const SanTodaScreen = () => {
   const [isAvailable, setIsAvailable] = React.useState(true);
@@ -28,7 +29,7 @@ const SanTodaScreen = () => {
 
       <View className="p-4">
         <View className="flex-row justify-between">
-          <TouchableOpacity className="bg-red-500 rounded-lg p-2 flex-1 mr-2">
+          <TouchableOpacity className="bg-red-500 rounded-lg p-2 flex-1 mr-2" onPress={() => router.back()}>
             <Text className="text-white text-center font-bold">Cancel</Text>
           </TouchableOpacity>
           <TouchableOpacity className="bg-green-500 rounded-lg p-2 flex-1 ml-2">

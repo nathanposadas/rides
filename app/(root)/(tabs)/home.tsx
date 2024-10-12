@@ -117,7 +117,9 @@ const HomeScreen = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity className="bg-orange-500 py-2 px-4 rounded">
-                  <Text className="text-white">Service</Text>
+                  <Text className="text-white" onPress={() => {
+                  router.push("/PassengerServiceDashboard");
+                }} >Service</Text>
                 </TouchableOpacity>
                 
                 <TouchableOpacity 

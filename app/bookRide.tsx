@@ -6,6 +6,7 @@ import Map from "@/components/map";
 import { useLocationStore } from '@/store';
 import * as Location from "expo-location";
 
+
 const App = () => {
   const router = useRouter(); // For back navigation
 
@@ -63,11 +64,11 @@ const App = () => {
         {/* Rider Information */}
         <View className="mb-5">
           <Text className="font-bold">Rider:</Text>
-          <Text className="mb-2">Body No.</Text>
+          <Text className="mb-2 font-bold">Body No.</Text>
           <Text className="font-bold">Total Fare:</Text>
-          <Text className="mb-2">Destination:</Text>
+          
           <Text className="font-bold">From:</Text>
-          <Text className="mb-2">To:</Text>
+          <Text className="mb-2 font-bold">To:</Text>
           <Text className="font-bold">Selected Payment Option:</Text>
 
           <View className="flex-row justify-between my-2">

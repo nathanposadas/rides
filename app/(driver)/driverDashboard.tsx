@@ -125,8 +125,8 @@ const RequestCard: React.FC<RequestCardProps> = ({ type, typeColor, name, destin
         <TouchableOpacity  onPress={() => router.push("/driverMaps" as Href)} className="bg-green-500 px-4 py-2 rounded-lg">
           <Text className="text-white">ACCEPT</Text>
         </TouchableOpacity>
-        <TouchableOpacity className="bg-red-500 px-4 py-2 rounded-lg">
-          <Text className="text-white">NEXT</Text>
+        <TouchableOpacity className="bg-red-500 px-4 py-2 rounded-lg" >
+          <Text className="text-white">Decline</Text>
         </TouchableOpacity>
       </View>
     </View>

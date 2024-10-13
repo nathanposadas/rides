@@ -105,9 +105,6 @@ const HomeScreen = () => {
               />
               <Text className="text-xl font-bold mb-2 text-white">{rider.name || 'Unknown Rider'}</Text>
               <Text className="text-sm mb-4 text-white">Estimated Fare: {rider.estimatedFare || 'N/A'}</Text>
-              <Text className="text-sm mb-2 text-white">Age: {rider.age || 'N/A'}</Text>
-              <Text className="text-sm mb-2 text-white">Body Number: {rider.bodyNumber || 'N/A'}</Text>
-              <Text className="text-sm mb-2 text-white">Vehicle: {rider.vehicle || 'N/A'}</Text>
 
               <View className="flex-row justify-between">
                 <TouchableOpacity className="bg-yellow-500 py-2 px-4 rounded" onPress={() => {
@@ -144,8 +141,8 @@ const HomeScreen = () => {
           setSelectedRider(null);
         }}
       >
-        <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-          <View className="bg-white p-4 rounded-lg w-80">
+        <View className="flex-1 justify-center items-center bg-black bg-opacity-50 bg-transparent">
+          <View className="bg-white p-4 rounded-lg w-80 shadow-lg">
             {selectedRider && (
               <>
                 <Text className="text-xl font-bold">{selectedRider.name || 'Unknown Rider'}</Text>

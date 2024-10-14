@@ -7,7 +7,14 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "rootDir": "./"    // Change this to root directory instead of just "src"
   },
   "include": [
     "**/*.ts",
@@ -15,5 +22,9 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "nativewind.env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
   ]
 }

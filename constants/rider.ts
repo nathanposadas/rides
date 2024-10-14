@@ -1,9 +1,9 @@
 export const riders = [
   {
     id: 1,
-    name: 'Moto Rider 1',
-    age: '63',
-    bodyNumber: '1234',
+    name: 'Ronaldo Casareno',
+    age: '61',
+    bodyNumber: '044',
     vehicle: 'Kawasaki',
     estimatedFare: 'P35',
     bgColor: '#000000', // Black
@@ -11,9 +11,9 @@ export const riders = [
   },
   {
     id: 2,
-    name: 'Moto Rider 2',
-    age: '33',
-    bodyNumber: '2345',
+    name: 'El Comedia',
+    age: '42',
+    bodyNumber: '021',
     vehicle: 'Honda',
     estimatedFare: 'P120',
     bgColor: '#808080', // Gray
@@ -21,9 +21,9 @@ export const riders = [
   },
   {
     id: 3,
-    name: 'Moto Rider 3',
-    age: '33',
-    bodyNumber: '2131',
+    name: 'Rodolfo Padina',
+    age: '61',
+    bodyNumber: '082',
     vehicle: 'Nissan',
     estimatedFare: 'P150',
     bgColor: '#5A5C5E', // Dark Slate Gray
@@ -31,9 +31,9 @@ export const riders = [
   },
   {
     id: 4,
-    name: 'Moto Rider 4',
-    age: '28',
-    bodyNumber: '4567',
+    name: 'Rannel Givera',
+    age: '53',
+    bodyNumber: '046',
     vehicle: 'Yamaha',
     estimatedFare: 'P80',
     bgColor: '#3E1F1F', // Dark Brown
@@ -41,9 +41,9 @@ export const riders = [
   },
   {
     id: 5,
-    name: 'Moto Rider 5',
-    age: '40',
-    bodyNumber: '8901',
+    name: 'Allan Ilocto',
+    age: '51',
+    bodyNumber: '003',
     vehicle: 'Suzuki',
     estimatedFare: 'P100',
     bgColor: '#4B2C20', // Dark Red
@@ -51,9 +51,9 @@ export const riders = [
   },
   {
     id: 6,
-    name: 'Moto Rider 6',
-    age: '36',
-    bodyNumber: '5678',
+    name: 'Eric Padilla',
+    age: '48',
+    bodyNumber: '005',
     vehicle: 'KTM',
     estimatedFare: 'P90',
     bgColor: '#3B3C36', // Dark Charcoal
@@ -61,9 +61,9 @@ export const riders = [
   },
   {
     id: 7,
-    name: 'Moto Rider 7',
-    age: '29',
-    bodyNumber: '2341',
+    name: 'Monelito Alvarez',
+    age: '63',
+    bodyNumber: '042',
     vehicle: 'Ducati',
     estimatedFare: 'P200',
     bgColor: '#1C1F2A', // Dark Navy
@@ -71,9 +71,9 @@ export const riders = [
   },
   {
     id: 8,
-    name: 'Moto Rider 8',
-    age: '45',
-    bodyNumber: '6789',
+    name: 'Sammy Francisco',
+    age: '43',
+    bodyNumber: '133',
     vehicle: 'BMW',
     estimatedFare: 'P250',
     bgColor: '#4B0082', // Dark Indigo
@@ -81,9 +81,9 @@ export const riders = [
   },
   {
     id: 9,
-    name: 'Moto Rider 9',
-    age: '50',
-    bodyNumber: '9876',
+    name: 'John Philip',
+    age: '40',
+    bodyNumber: '004',
     vehicle: 'Triumph',
     estimatedFare: 'P300',
     bgColor: '#4E3B31', // Dark Coffee
@@ -91,9 +91,9 @@ export const riders = [
   },
   {
     id: 10,
-    name: 'Moto Rider 10',
-    age: '38',
-    bodyNumber: '5432',
+    name: 'Degraicas Tio',
+    age: '52',
+    bodyNumber: '002',
     vehicle: 'Kawasaki Ninja',
     estimatedFare: 'P400',
     bgColor: '#5C5A3E', // Dark Olive

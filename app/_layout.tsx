@@ -53,6 +53,7 @@ if (!publishableKey) {
         <Stack.Screen name="PassengerServiceDashboard"options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
         <Stack.Screen name="PaymentScreen"options={{ headerShown: false }} />
+
       </Stack>
       </ClerkLoaded>
       </ClerkProvider>

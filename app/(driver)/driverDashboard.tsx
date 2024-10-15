@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { Href, useRouter } from 'expo-router'; // Import the useRouter hook
-import { router } from "expo-router";
 
 // Define types for RequestCard props
 type Schedule = {
@@ -17,6 +16,7 @@ type RequestCardProps = {
   destination?: string;  // optional, as it's only used for Quick Ride
   fare?: string;         // optional, as it's only used for Quick Ride
   schedule?: Schedule;   // optional, as it's only used for Service Request
+  acceptRoute: string;   // New prop for the route to navigate to on accept
 };
 
 const HomeScreen = () => {
@@ -49,13 +49,6 @@ const HomeScreen = () => {
         </View>
       </View>
 
-      {/* Language Button */}
-      <View className="p-4 flex-row justify-end">
-        <TouchableOpacity className="bg-yellow-400 px-4 py-2 rounded-lg">
-          <Text className="text-black">Tagalog ▼</Text>
-        </TouchableOpacity>
-      </View>
-
       {/* Scrollable Request Cards */}
       <ScrollView contentContainerStyle={{ paddingBottom: 80 }} className="p-4">
         {/* Quick Ride Request */}
@@ -65,6 +58,7 @@ const HomeScreen = () => {
           name="Juan Dela Cruz"
           destination="Santolan - Parada"
           fare="Php15"
+          acceptRoute="/quickRideMaps"  // Define the route for Quick Ride
         />
 
         {/* Service Request */}
@@ -77,6 +71,7 @@ const HomeScreen = () => {
             day: 'Mon-Fri',
             time: '7am',
           }}
+          acceptRoute="/serviceMaps"  // Define the route for Service Request
         />
       </ScrollView>
     </View>
@@ -84,7 +79,9 @@ const HomeScreen = () => {
 };
 
 // Updated RequestCard component with types
-const RequestCard: React.FC<RequestCardProps> = ({ type, typeColor, name, destination, fare, schedule }) => {
+const RequestCard: React.FC<RequestCardProps> = ({ type, typeColor, name, destination, fare, schedule, acceptRoute }) => {
+  const router = useRouter(); // Initialize the router in RequestCard component
+
   return (
     <View className="bg-gray-300 p-4 rounded-lg mb-4">
       {/* Ride Type Tag */}
@@ -122,10 +119,10 @@ const RequestCard: React.FC<RequestCardProps> = ({ type, typeColor, name, destin
 
       {/* Action Buttons */}
       <View className="flex-row justify-between mt-4">
-        <TouchableOpacity  onPress={() => router.push("/driverMaps" as Href)} className="bg-green-500 px-4 py-2 rounded-lg">
+        <TouchableOpacity onPress={() => router.push('/driverMaps')} className="bg-green-500 px-4 py-2 rounded-lg">
           <Text className="text-white">ACCEPT</Text>
         </TouchableOpacity>
-        <TouchableOpacity className="bg-red-500 px-4 py-2 rounded-lg" >
+        <TouchableOpacity className="bg-red-500 px-4 py-2 rounded-lg">
           <Text className="text-white">Decline</Text>
         </TouchableOpacity>
       </View>

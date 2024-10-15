@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Image, SafeAreaView, ScrollView, TouchableOpacity, Modal, Pressable } from 'react-native';
+import { View, Text, Image, SafeAreaView, ScrollView, TouchableOpacity, Modal, Button, Pressable, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import CustomButton from '@/components/CustomButton';
 import Map from "@/components/map";
 import { useLocationStore } from '@/store';
 import * as Location from "expo-location";
+import { riders } from '@/constants/rider'; // Import the riders array
 
 const App = () => {
   const router = useRouter(); 
-  const { setUserLocation, setDestinationLocation } = useLocationStore();
+  const { setUserLocation } = useLocationStore();
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false); 
-  const [pickupConfirmed, setPickupConfirmed] = useState<boolean>(false); // State to track pickup confirmation
+  const [confirmationModalVisible, setConfirmationModalVisible] = useState<boolean>(false); // New state for the confirmation modal
+  const [fromLocation, setFromLocation] = useState<string>(''); // State to track "From" input
+  const [toLocation, setToLocation] = useState<string>(''); // State to track "To" input
 
   useEffect(() => {
     (async () => {
@@ -36,22 +39,12 @@ const App = () => {
     })();
   }, []);
 
-  const handlePickupConfirmation = () => {
-    if (!pickupConfirmed) {
-      // First time confirming the pickup location
-      setPickupConfirmed(true);
-    } else {
-      // Second time: maybe change the location or reset state if needed
-      setPickupConfirmed(false); // For demonstration, it toggles back to the unconfirmed state
-    }
-  };
-
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="flex-1 p-5">
         {/* Back Button */}
         <TouchableOpacity onPress={() => router.push('/(root)/(tabs)/home')} className="mb-5">
-          <Text className="text-blue-500 font-bold">Back</Text>
+          <Text className="text-blue-500 font-bold text-lg">Back</Text>
         </TouchableOpacity>
 
         {/* Logo */}
@@ -70,29 +63,58 @@ const App = () => {
 
         {/* Rider Information */}
         <View className="mb-5">
-          <Text className="font-bold">Rider:</Text>
-          <Text className="mb-2 font-bold">Body No.</Text>
-          <Text className="font-bold">Total Fare:</Text>
+          {/* Example: Rendering the first rider from the array */}
+          {riders.length > 0 && (
+            <>
+              <View className="flex-row justify-between mb-2">
+                <Text className="font-bold">Rider:</Text>
+                <Text>{riders[0].name}</Text>
+              </View>
+              <View className="flex-row justify-between mb-2">
+                <Text className="font-bold">Body No.:</Text>
+                <Text>{riders[0].bodyNumber}</Text>
+              </View>
+            </>
+          )}
           
+          <Text className="font-bold">Total Fare:</Text>
+
+          {/* From Input */}
           <Text className="font-bold">From:</Text>
-          <Text className="mb-2 font-bold">To:</Text>
+          <TextInput
+            value={fromLocation}
+            onChangeText={setFromLocation}
+            placeholder="Enter pickup location"
+            className="border border-gray-400 rounded p-2 mb-3"
+          />
+
+          {/* To Input */}
+          <Text className="font-bold">To:</Text>
+          <TextInput
+            value={toLocation}
+            onChangeText={setToLocation}
+            placeholder="Enter destination"
+            className="border border-gray-400 rounded p-2 mb-3"
+          />
+          
           <Text className="font-bold">Selected Payment Option:</Text>
 
           <View className="flex-row justify-between my-2">
             <CustomButton title="Cash" onPress={() => setModalVisible(true)} className="flex-1 mr-1" />
-            <CustomButton title="GCash" onPress={() => router.push('/PaymentScreeen') } className="flex-1 ml-1" />
+            <CustomButton title="GCash" onPress={() => router.push('/PaymentScreen')} className="flex-1 ml-1" />
           </View>
 
+          {/* Show From and To locations when the button is pressed */}
           <View className="mt-5">
             <Button
-              title={pickupConfirmed ? "Drop-Off confirm" : "Confirm Pickup Location"}
-              onPress={handlePickupConfirmation}
-              color={pickupConfirmed ? "#10B981" : "#FBBF24"} // Changes color to green after confirming
+              title="Show Pickup and Destination"
+              onPress={() => setConfirmationModalVisible(true)} // Opens the confirmation modal
+              color="#FBBF24"
             />
           </View>
         </View>
 
-        {/* Modal */}
+        {/* Payment Modal */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -118,6 +140,35 @@ const App = () => {
             </View>
           </View>
         </Modal>
+
+        {/* Confirmation Modal for From/To */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={confirmationModalVisible}
+          onRequestClose={() => setConfirmationModalVisible(false)}
+        >
+          <View className="flex-1 justify-center items-center bg-transparent bg-opacity-50 shadow-lg">
+            <View className="bg-gray-100 p-5 rounded-lg w-4/5">
+              <Text className="text-lg font-bold mb-4">Confirm Locations</Text>
+              <Text className="mb-2">From: {fromLocation}</Text>
+              <Text className="mb-4">To: {toLocation}</Text>
+              <Pressable
+                className="bg-blue-500 p-3 rounded-full mb-3"
+                onPress={() => setConfirmationModalVisible(false)}
+              >
+                <Text className="text-white text-center">Confirm</Text>
+              </Pressable>
+              <Pressable
+                className="bg-gray-300 p-3 rounded-full"
+                onPress={() => setConfirmationModalVisible(false)}
+              >
+                <Text className="text-center">Cancel</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
       </ScrollView>
     </SafeAreaView>
   );

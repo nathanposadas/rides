@@ -15,7 +15,7 @@ export const riders = [
     age: '42',
     bodyNumber: '021',
     vehicle: 'Honda',
-    estimatedFare: 'P120',
+    estimatedFare: 'P35',
     bgColor: '#808080', // Gray
     image: require('@/assets/icons/icons1.png'),
   },
@@ -25,7 +25,7 @@ export const riders = [
     age: '61',
     bodyNumber: '082',
     vehicle: 'Nissan',
-    estimatedFare: 'P150',
+    estimatedFare: 'P35',
     bgColor: '#5A5C5E', // Dark Slate Gray
     image: require('@/assets/icons/icons2.png'),
   },
@@ -35,7 +35,7 @@ export const riders = [
     age: '53',
     bodyNumber: '046',
     vehicle: 'Yamaha',
-    estimatedFare: 'P80',
+    estimatedFare: '25',
     bgColor: '#3E1F1F', // Dark Brown
     image: require('@/assets/icons/icons3.png'),
   },
@@ -45,7 +45,7 @@ export const riders = [
     age: '51',
     bodyNumber: '003',
     vehicle: 'Suzuki',
-    estimatedFare: 'P100',
+    estimatedFare: 'P35',
     bgColor: '#4B2C20', // Dark Red
     image: require('@/assets/icons/icons4.png'),
   },
@@ -55,7 +55,7 @@ export const riders = [
     age: '48',
     bodyNumber: '005',
     vehicle: 'KTM',
-    estimatedFare: 'P90',
+    estimatedFare: 'P35',
     bgColor: '#3B3C36', // Dark Charcoal
     image: require('@/assets/icons/icons5.png'),
   },
@@ -65,7 +65,7 @@ export const riders = [
     age: '63',
     bodyNumber: '042',
     vehicle: 'Ducati',
-    estimatedFare: 'P200',
+    estimatedFare: 'P35',
     bgColor: '#1C1F2A', // Dark Navy
     image: require('@/assets/icons/icons6.png'),
   },
@@ -75,7 +75,7 @@ export const riders = [
     age: '43',
     bodyNumber: '133',
     vehicle: 'BMW',
-    estimatedFare: 'P250',
+    estimatedFare: 'P35',
     bgColor: '#4B0082', // Dark Indigo
     image: require('@/assets/icons/icons8.png'),
   },
@@ -85,17 +85,17 @@ export const riders = [
     age: '40',
     bodyNumber: '004',
     vehicle: 'Triumph',
-    estimatedFare: 'P300',
+    estimatedFare: 'P35',
     bgColor: '#4E3B31', // Dark Coffee
     image: require('@/assets/icons/icons7.png'),
   },
   {
     id: 10,
-    name: 'Degraicas Tio',
+    name: 'Deogracias Tio-ong',
     age: '52',
     bodyNumber: '002',
     vehicle: 'Kawasaki Ninja',
-    estimatedFare: 'P400',
+    estimatedFare: 'P35',
     bgColor: '#5C5A3E', // Dark Olive
     image: require('@/assets/images/rider1.png'),
   },

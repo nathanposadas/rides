@@ -164,13 +164,6 @@ const HomeScreen = () => {
           </View>
         </View>
       </Modal>
-
-      {/* Footer Language Button */}
-      <View className="absolute bottom-0 right-0 p-4">
-        <TouchableOpacity className="bg-gray-300 px-4 py-2 rounded-lg">
-          <Text className="text-black">Tagalog ▼</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };

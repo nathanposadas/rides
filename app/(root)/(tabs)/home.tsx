@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo';
 import { Link, useRouter } from 'expo-router';
 import { Text, View, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
-import { images } from "@/constants";
+import { icons, images } from "@/constants";
 import { riders } from '@/constants/rider'; // Ensure this is a valid import
 import { ImageSourcePropType } from 'react-native'; // Import the correct type
 
@@ -51,11 +51,11 @@ const HomeScreen = () => {
             />
             <Text className="text-2xl font-bold ml-0">SanToda</Text>
           </View>
-          <View>
+          <View className='pt-4'>
             {/* Navigate to Profile Screen */}
             <TouchableOpacity className='flex-1' onPress={navigateToProfile}>
               <Image
-                source={{ uri: 'https://img.icons8.com/ios-filled/50/000000/user-male-circle.png' }}
+                source={icons.profile}
                 className="w-8 h-8"
               />
             </TouchableOpacity>

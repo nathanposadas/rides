@@ -1,5 +1,5 @@
 import { useOAuth } from "@clerk/clerk-expo";
-import { router } from "expo-router";
+import  {router}  from "expo-router";
 import { Alert, Image, Text, View } from "react-native";
 
 import CustomButton from "@/components/CustomButton";

@@ -1,133 +1,144 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { Href, useRouter } from 'expo-router'; // Import the useRouter hook
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { useRouter } from 'expo-router';
+import { icons } from '@/constants';
+import requests, { Request } from '@/constants/passengerDate'; // Ensure the path is correct
 
-// Define types for RequestCard props
-type Schedule = {
-  month: string;
-  day: string;
-  time: string;
-};
+const DriverDashboard = () => {
+  const router = useRouter();
 
-type RequestCardProps = {
-  type: string;
-  typeColor: string;
-  name: string;
-  destination?: string;  // optional, as it's only used for Quick Ride
-  fare?: string;         // optional, as it's only used for Quick Ride
-  schedule?: Schedule;   // optional, as it's only used for Service Request
-  acceptRoute: string;   // New prop for the route to navigate to on accept
-};
+  const [quickRideRequest, setQuickRideRequest] = useState<Request | null>(null);
+  const [serviceRideRequest, setServiceRideRequest] = useState<Request | null>(null);
+  const [loading, setLoading] = useState(false); // Set loading state to false initially
 
-const HomeScreen = () => {
-  const router = useRouter(); // Initialize the router
+  const getRandomRequest = (): Request => {
+    const randomIndex = Math.floor(Math.random() * requests.length);
+    return requests[randomIndex];
+  };
 
-  const navigateToProfile = () => {
-    router.push('/driverProfile'); // Change the path to /driverProfile
+  useEffect(() => {
+    const fetchRequests = () => {
+      setLoading(true); // Start loading when fetching new requests
+      setTimeout(() => {
+        setQuickRideRequest(getRandomRequest());
+        setServiceRideRequest(getRandomRequest());
+        setLoading(false); // Stop loading after fetching new requests
+      }, 500); // Simulate a delay for demonstration
+    };
+
+    fetchRequests(); // Initial fetch
+    const interval = setInterval(fetchRequests, 10000); // Fetch every 10 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Function to handle navigation
+  const handleNavigate = (request: Request | null) => {
+    if (request) {
+      setLoading(true); // Start loading indicator
+      setTimeout(() => {
+        setLoading(false); // Stop loading after a brief delay for demonstration
+        router.push({
+          pathname: '/driverMaps',
+          params: {
+            name: request.name,
+            destination: request.destination,
+            time: request.time,
+          },
+        });
+      }, 1000); // Simulate network delay
+    }
   };
 
   return (
-    <View className="flex-1 bg-gray-200">
+    <ScrollView className="flex-1 bg-gray-200">
       {/* Header */}
       <View className="bg-gray-300 p-4 flex-row justify-between items-center">
-        <View className="flex-row items-center">
+        <Text className="text-black font-bold text-2xl">Rider Dashboard</Text>
+        
+        {/* Profile Icon */}
+        <TouchableOpacity onPress={() => router.push('/driverProfile')}>
           <Image
-            source={require('@/assets/images/icon1.png')} // Replace with the SanToda logo path
-            className="w-12 h-12"
+            source={icons.profile}
+            className="w-10 h-10 rounded-full"
             resizeMode="contain"
           />
-          <Text className="text-2xl font-bold ml-2">SanToda</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Quick Ride Card */}
+      <View className="bg-gray-300 p-4 mt-4 mx-4 rounded-md">
+        <Text className="text-yellow-500 font-bold text-lg">Quick Ride</Text>
+        <Text className="font-bold text-xl">New Request!</Text>
+
+        <View className="bg-yellow-300 p-4 mt-2 rounded-md">
+          {loading ? ( // Loading indicator for Quick Ride
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <>
+              <Text className='font-bold'>Name: {quickRideRequest?.name || 'N/A'}</Text>
+              <Text className='font-bold'>Destination: {quickRideRequest?.destination || 'N/A'}</Text>
+              <Text className='font-bold'>Fare: {quickRideRequest?.fare || 'N/A'}</Text>
+            </>
+          )}
         </View>
-        <View className="flex-row items-center">
-          <Text className="text-lg font-bold">Rider Dashboard</Text>
-          <TouchableOpacity onPress={navigateToProfile} className="ml-4">
-            <Image
-              source={{ uri: 'https://img.icons8.com/ios-filled/50/000000/user-male-circle.png' }}
-              className="w-8 h-8"
-            />
+
+        <View className="flex-row justify-around mt-4">
+          {/* Accept Button */}
+          <TouchableOpacity
+            className="bg-green-500 px-4 py-2 rounded-md"
+            onPress={() => handleNavigate(quickRideRequest)} // Safe navigation
+          >
+            <Text className="text-white font-bold">ACCEPT</Text>
+          </TouchableOpacity>
+
+          {/* Decline Button */}
+          <TouchableOpacity
+            className="bg-red-500 px-4 py-2 rounded-md"
+          >
+            <Text className="text-white font-bold">DECLINE</Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Scrollable Request Cards */}
-      <ScrollView contentContainerStyle={{ paddingBottom: 80 }} className="p-4">
-        {/* Quick Ride Request */}
-        <RequestCard
-          type="Quick Ride"
-          typeColor="bg-yellow-400"
-          name="Juan Dela Cruz"
-          destination="Santolan - Parada"
-          fare="Php15"
-          acceptRoute="/quickRideMaps"  // Define the route for Quick Ride
-        />
+      {/* Service Ride Card */}
+      <View className="bg-gray-300 p-4 mt-4 mx-4 rounded-md">
+        <Text className="text-orange-500 font-bold text-lg">Service</Text>
+        <Text className="font-bold text-xl">New Request!</Text>
 
-        {/* Service Request */}
-        <RequestCard
-          type="Service"
-          typeColor="bg-orange-400"
-          name="Juan Dela Cruz"
-          schedule={{
-            month: 'October',
-            day: 'Mon-Fri',
-            time: '7am',
-          }}
-          acceptRoute="/serviceMaps"  // Define the route for Service Request
-        />
-      </ScrollView>
-    </View>
+        <View className="bg-yellow-300 p-4 mt-2 rounded-md">
+          {loading ? ( // Loading indicator for Service Ride
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <>
+              <Text className='font-bold'>Name: {serviceRideRequest?.name || 'N/A'}</Text>
+              <Text className='font-bold'>Schedule:</Text>
+              <Text className='font-bold'>Month: {serviceRideRequest?.schedule || 'N/A'}</Text>
+              <Text className='font-bold'>Day: {serviceRideRequest?.day || 'N/A'}</Text>
+              <Text className='font-bold'>Time: {serviceRideRequest?.time || 'N/A'}</Text>
+            </>
+          )}
+        </View>
+
+        <View className="flex-row justify-around mt-4">
+          {/* Accept Button */}
+          <TouchableOpacity
+            className="bg-green-500 px-4 py-2 rounded-md"
+            onPress={() => handleNavigate(serviceRideRequest)} // Safe navigation
+          >
+            <Text className="text-white font-bold">ACCEPT</Text>
+          </TouchableOpacity>
+
+          {/* Decline Button */}
+          <TouchableOpacity
+            className="bg-red-500 px-4 py-2 rounded-md"
+          >
+            <Text className="text-white font-bold">DECLINE</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 
-// Updated RequestCard component with types
-const RequestCard: React.FC<RequestCardProps> = ({ type, typeColor, name, destination, fare, schedule, acceptRoute }) => {
-  const router = useRouter(); // Initialize the router in RequestCard component
-
-  return (
-    <View className="bg-gray-300 p-4 rounded-lg mb-4">
-      {/* Ride Type Tag */}
-      <View className="flex-row items-center">
-        <TouchableOpacity className={`${typeColor} px-4 py-2 rounded-full`}>
-          <Text className="text-white font-bold">{type}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Request Details */}
-      <Text className="text-xl font-bold mt-4">New Request!</Text>
-      <View className="bg-yellow-300 p-4 mt-2 rounded-lg">
-        <Text className="text-base font-bold">
-          Name: <Text className="font-normal">{name}</Text>
-        </Text>
-
-        {/* Conditionally render destination and fare if available */}
-        {destination && fare && (
-          <>
-            <Text className="text-base">Destination: {destination}</Text>
-            <Text className="text-base">Fare: {fare}</Text>
-          </>
-        )}
-
-        {/* Conditionally render schedule if available */}
-        {schedule && (
-          <>
-            <Text className="text-base">Schedule:</Text>
-            <Text className="ml-2 text-sm">Month: {schedule.month}</Text>
-            <Text className="ml-2 text-sm">Day: {schedule.day}</Text>
-            <Text className="ml-2 text-sm">Time: {schedule.time}</Text>
-          </>
-        )}
-      </View>
-
-      {/* Action Buttons */}
-      <View className="flex-row justify-between mt-4">
-        <TouchableOpacity onPress={() => router.push('/driverMaps')} className="bg-green-500 px-4 py-2 rounded-lg">
-          <Text className="text-white">ACCEPT</Text>
-        </TouchableOpacity>
-        <TouchableOpacity className="bg-red-500 px-4 py-2 rounded-lg">
-          <Text className="text-white">Decline</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
-export default HomeScreen;
+export default DriverDashboard;
